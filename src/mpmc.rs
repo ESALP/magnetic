@@ -5,10 +5,10 @@
 //! multiple threads. In other words, both `MPMCProducer` and `MPMCConsumer`
 //! are `Send` and `Sync`.
 
-use std::cell::UnsafeCell;
-use std::marker::PhantomData;
-use std::sync::Arc;
-use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+use core::cell::UnsafeCell;
+use core::marker::PhantomData;
+use core::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+use alloc::arc::Arc;
 
 use super::{Consumer, Producer, PushError, TryPushError, PopError, TryPopError};
 use super::buffer::Buffer;
@@ -18,10 +18,8 @@ use util::{pause, buf_read, buf_write};
 struct MPMCQueue<T, B: Buffer<T>> {
     head: AtomicUsize,
     next_head: AtomicUsize,
-    _pad1: [u8; 48],
     tail: AtomicUsize,
     next_tail: AtomicUsize,
-    _pad2: [u8; 48],
     buf: B,
     ok: AtomicBool,
     _marker: PhantomData<T>
@@ -64,10 +62,8 @@ pub fn mpmc_queue<T, B: Buffer<T>>(buf: B)
     let queue = MPMCQueue {
         head: AtomicUsize::new(0),
         next_head: AtomicUsize::new(0),
-        _pad1: [0; 48],
         tail: AtomicUsize::new(0),
         next_tail: AtomicUsize::new(0),
-        _pad2: [0; 48],
         buf: buf,
         ok: AtomicBool::new(true),
         _marker: PhantomData

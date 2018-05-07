@@ -1,5 +1,6 @@
-use std::mem;
-use std::ptr;
+use core::mem;
+use core::ptr;
+use alloc::vec::Vec;
 
 use super::buffer::Buffer;
 

@@ -36,6 +36,8 @@
 //! t1.join().unwrap();
 //! t2.join().unwrap();
 //! ```
+#![no_std]
+#![feature(alloc)]
 
 #![cfg_attr(feature = "unstable", feature(test, asm))]
 
@@ -43,6 +45,7 @@
 
 #[cfg(feature = "unstable")]
 extern crate test;
+extern crate alloc;
 
 pub mod buffer;
 pub mod spsc;

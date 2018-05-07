@@ -5,10 +5,10 @@
 //! In other words, both the `SPSCProducer` and `SPSCConsumer` are `Send` and
 //! `!Sync`.
 
-use std::cell::UnsafeCell;
-use std::marker::PhantomData;
-use std::sync::Arc;
-use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
+use core::cell::UnsafeCell;
+use core::marker::PhantomData;
+use alloc::arc::Arc;
+use core::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 
 use super::{Consumer, Producer, PushError, TryPushError, PopError, TryPopError};
 use super::buffer::Buffer;
@@ -17,9 +17,7 @@ use util::{pause, buf_read, buf_write};
 //#[repr(C)]
 struct SPSCQueue<T, B: Buffer<T>> {
     head: AtomicUsize,
-    _pad1: [u8; 56],
     tail: AtomicUsize,
-    _pad2: [u8; 56],
     buf: B,
     ok: AtomicBool,
     _marker: PhantomData<T>
@@ -59,9 +57,7 @@ pub fn spsc_queue<T, B: Buffer<T>>(buf: B)
         -> (SPSCProducer<T, B>, SPSCConsumer<T, B>) {
     let queue = SPSCQueue {
         head: AtomicUsize::new(0),
-        _pad1: [0; 56],
         tail: AtomicUsize::new(0),
-        _pad2: [0; 56],
         buf: buf,
         ok: AtomicBool::new(true),
         _marker: PhantomData
